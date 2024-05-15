@@ -1,18 +1,20 @@
-pipeline {
-    agent any 
-    tools{
-        maven 'M2_HOME'
-    }
-    stages{
-        stage("maven"){
-            steps {
-                sh 'mvn clean validate compile test install test package'
-            }
-        }
-        stage('upload artifact'){
-            steps{
-                sh curl -uadmin:AP8rLTMivJ5CwC1pfRSc92VuLpg -T <PATH_TO_FILE> "http://ec2-user@ec2-18-233-64-46.compute-1.amazonaws.com":8081/artifactory/geolocation/geo/bio_${BUILD_ID}"
-            }
+pipeline{
+   agent any 
+   tools{
+    maven 'M2_HOME'
+   }
+   stages{
+    stage("maven"){
+        steps{ 
+        sh 'mvn clean validate compile install test package'
         }
     }
+    stage('upload artifact'){
+        steps{
+            sh 'curl -uadmin:AP8gcgmmset5jeYChTJYDN6XmDd -T \
+            target/bio*.jar \
+            "http://ec2-18-233-64-46.compute-1.amazonaws.com:8081/artifactory/geolocation/geo/bio_${BUILD_ID}.jar"'
+        }
+    }
+   }
 }
